@@ -15,10 +15,19 @@ const Img = styled.img`
     border-radius: 4px;
 `;
 
-const ImageCard = ({ imgData, onClick }) => {
-    const { webformatURL, id } = imgData;
+const ImageCard = ({ imgData, setModalData }) => {
+    const { webformatURL, id, tags, views, likes, largeImageURL } = imgData;
     return (
-        <Card onClick={onClick}>
+        <Card
+            onClick={() =>
+                setModalData({
+                    tags: tags,
+                    views: views,
+                    likes: likes,
+                    largeImageURL: largeImageURL,
+                })
+            }
+        >
             <Img key={id} src={webformatURL}></Img>
         </Card>
     );

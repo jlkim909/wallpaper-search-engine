@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { ReactComponent as LikeIcon } from '../asset/like.svg';
 import { ReactComponent as DeleteIcon } from '../asset/delete.svg';
-import DummyData from '../asset/dummyData';
 
 const Modal = styled.div`
     position: fixed;
@@ -31,18 +30,22 @@ const DetailRow = styled.div`
     }
 `;
 
-const ImageModal = () => {
-    const { largeImageURL } = DummyData.hits[0];
+const ImageModal = ({ modalData, onCloseHandler }) => {
     return (
         <Modal>
-            <DeleteIcon width="24px" cursor="pointer" fill="#FFFFFF" />
-            <ModalImg src={largeImageURL} />
-            <p>태그,태그,태그</p>
+            <DeleteIcon
+                width="24px"
+                cursor="pointer"
+                fill="#FFFFFF"
+                onClick={onCloseHandler}
+            />
+            <ModalImg src={modalData.largeImageURL} />
+            <p>{modalData.tags}</p>
             <DetailRow>
                 <LikeIcon width="20px" height="20px" />
-                123명이 좋아합니다
+                {modalData.likes}명이 좋아합니다
             </DetailRow>
-            <p>12345 조회</p>
+            <p>{modalData.views} 조회</p>
         </Modal>
     );
 };

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as SearchIcon } from '../asset/search.svg';
 import SearchTag from './SearchTag';
 import SearchOption from './SearchOption';
+import { paramContext } from '../App';
 
 const SearchTagContainer = styled.div`
     display: flex;
@@ -47,18 +48,46 @@ const SearchOptionButton = styled.p`
 `;
 
 const Search = () => {
+    const savedTagList = localStorage.getItem('tagList');
+    const initialLocalStorage = savedTagList ? JSON.parse(savedTagList) : [];
     const [searchOption, setSearchOption] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+    const [tagList, setTagList] = useState(initialLocalStorage);
+
+    const { setParams } = useContext(paramContext);
 
     const toggleSearchOption = () => {
         setSearchOption((prev) => !prev);
     };
+
+    const deleteTagHandler = (idx) => {
+        const newTagList = [...tagList];
+        newTagList.splice(idx, 1);
+        setTagList(newTagList);
+    };
+
+    const onKeyDown = (e) => {
+        if (e.code !== 'Enter' || searchValue.length === 0) return;
+        setParams((prev) => ({ ...prev, q: searchValue }));
+        setSearchValue('');
+        setTagList((prev) => [...prev, searchValue]);
+    };
+
+    useEffect(() => {
+        localStorage.setItem('tagList', JSON.stringify(tagList));
+    }, [tagList]);
 
     return (
         <>
             <SearchBoxContainer>
                 <SearchInputContainer>
                     <SearchIcon width="24" fill="#5e5e5e" />
-                    <SearchInput placeholder="검색어 입력 후 ENTER" />
+                    <SearchInput
+                        onKeyDown={onKeyDown}
+                        placeholder="검색어 입력 후 ENTER"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
                     <SearchOptionButton onClick={toggleSearchOption}>
                         검색 옵션 {searchOption ? '닫기' : '열기'}
                     </SearchOptionButton>
@@ -66,7 +95,13 @@ const Search = () => {
                 {searchOption && <SearchOption />}
             </SearchBoxContainer>
             <SearchTagContainer>
-                <SearchTag />
+                {tagList.map((tag, idx) => (
+                    <SearchTag
+                        key={idx}
+                        label={tag}
+                        deleteTagHandler={() => deleteTagHandler(idx)}
+                    />
+                ))}
             </SearchTagContainer>
         </>
     );

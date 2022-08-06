@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
+import { paramContext } from '../App';
 import { ReactComponent as DeleteIcon } from '../asset/delete.svg';
 
 const Tag = styled.div`
@@ -23,11 +25,17 @@ const TagLabel = styled.span`
     }
 `;
 
-const SearchTag = () => {
+const SearchTag = ({ label, deleteTagHandler }) => {
+    const { setParams } = useContext(paramContext);
+
+    const onClick = () => {
+        setParams((prev) => ({ ...prev, q: label }));
+    };
+
     return (
-        <Tag>
-            <TagLabel>최근 검색어</TagLabel>
-            <DeleteIcon width="12px" />
+        <Tag onClick={onClick}>
+            <TagLabel>{label}</TagLabel>
+            <DeleteIcon width="12px" onClick={deleteTagHandler} />
         </Tag>
     );
 };

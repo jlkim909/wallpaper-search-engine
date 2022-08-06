@@ -1,4 +1,6 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
+import { paramContext } from '../App';
 
 const SearchOptionContainer = styled.div`
     display: flex;
@@ -25,12 +27,25 @@ const SearchOptionLabel = styled.p`
 `;
 
 const SearchOption = () => {
+    const { setParams } = useContext(paramContext);
+
+    const onChangeOrder = (e) => {
+        setParams((prev) => ({ ...prev, order: e.target.value }));
+    };
+
+    const onChangeOrientation = (e) => {
+        setParams((prev) => ({ ...prev, orientation: e.target.value }));
+    };
+
+    const onChangePerPage = (e) => {
+        setParams((prev) => ({ ...prev, per_page: e.target.value }));
+    };
     return (
         <SearchOptionContainer>
             <SearchOptionUl>
                 <SearchOptionLi>
                     <SearchOptionLabel>정렬</SearchOptionLabel>
-                    <form id="order">
+                    <form id="order" onChange={onChangeOrder}>
                         <input
                             type="radio"
                             name="order"
@@ -43,18 +58,20 @@ const SearchOption = () => {
                             name="order"
                             id="popular"
                             value="popular"
+                            defaultChecked
                         />
                         <label htmlFor="popular">인기순</label>
                     </form>
                 </SearchOptionLi>
                 <SearchOptionLi>
                     <SearchOptionLabel>사진 방향</SearchOptionLabel>
-                    <form id="orientation">
+                    <form id="orientation" onChange={onChangeOrientation}>
                         <input
                             type="radio"
                             name="orientation"
                             id="all"
                             value="all"
+                            defaultChecked
                         />
                         <label htmlFor="all">모두</label>
                         <input
@@ -75,7 +92,7 @@ const SearchOption = () => {
                 </SearchOptionLi>
                 <SearchOptionLi>
                     <SearchOptionLabel>페이지 당 갯수</SearchOptionLabel>
-                    <form id="per_page">
+                    <form id="per_page" onChange={onChangePerPage}>
                         <input
                             type="radio"
                             name="per_page"
@@ -88,6 +105,7 @@ const SearchOption = () => {
                             name="per_page"
                             id="20"
                             value={20}
+                            defaultChecked
                         />
                         <label htmlFor="20">20</label>
                         <input

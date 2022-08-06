@@ -4,6 +4,7 @@ import Hero from './component/Hero';
 import ResultContainer from './component/ResultContainer';
 import Footer from './component/Footer';
 import './App.css';
+import { createContext, useState } from 'react';
 
 const Container = styled.div`
     position: relative;
@@ -11,14 +12,29 @@ const Container = styled.div`
     min-height: 100vh;
 `;
 
+const initialState = {
+    q: '',
+    order: 'popular',
+    per_page: 20,
+    page: 1,
+    orientation: 'all',
+};
+export const paramContext = createContext({
+    params: initialState,
+    setData: () => {},
+});
 function App() {
+    const [params, setParams] = useState(initialState);
+
     return (
         <>
             <Container>
-                <Hero />
-                <ResultContainer />
-                <Footer />
-                <ToggleThemeButton />
+                <paramContext.Provider value={{ params, setParams }}>
+                    <Hero />
+                    <ResultContainer />
+                    <Footer />
+                    <ToggleThemeButton />
+                </paramContext.Provider>
             </Container>
         </>
     );
